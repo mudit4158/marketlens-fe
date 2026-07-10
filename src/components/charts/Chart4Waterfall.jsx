@@ -2,10 +2,11 @@ import { Bar } from 'react-chartjs-2';
 import {
   Chart as ChartJS, CategoryScale, LinearScale, BarElement, Tooltip, Legend,
 } from 'chart.js';
+import InfoTooltip from '../InfoTooltip';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 
-export default function Chart4Waterfall({ data }) {
+export default function Chart4Waterfall({ data, isLive = false }) {
   if (!data) return <div className="loading-state">Loading…</div>;
 
   const { waterfall } = data;
@@ -14,9 +15,9 @@ export default function Chart4Waterfall({ data }) {
     return (
       <div className="card">
         <div className="card-head">
-          <div>
-            <div className="card-title">🏗 Chart 4 — Waterfall: MCX Change Decomposed</div>
-            <div className="card-desc">Weekly MCX change split into COMEX contribution, Forex contribution, and MCX premium change.</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <div className="card-title">🏗 Waterfall: MCX Change Decomposed</div>
+            <InfoTooltip text={`Weekly MCX price change broken into three attribution buckets:\n\n• COMEX Effect: how much the USD gold/silver price moved contributed\n• Forex Effect: how much USD/INR movement contributed\n• MCX Premium Change: how much the MCX-specific premium (duties, local demand) shifted\n\nOnly available for 1M / 6M / 1Y / 5Y / YTD ranges (requires weekly grouping).`} />
           </div>
           <span className="chart-tag tag-4">Attribution</span>
         </div>
@@ -55,6 +56,7 @@ export default function Chart4Waterfall({ data }) {
 
   const opts = {
     responsive: true, maintainAspectRatio: false,
+    animation: isLive ? false : { duration: 300 },
     interaction: { mode: 'index', intersect: false },
     plugins: {
       legend: { display: false },
@@ -87,9 +89,9 @@ export default function Chart4Waterfall({ data }) {
   return (
     <div className="card">
       <div className="card-head">
-        <div>
-          <div className="card-title">🏗 Chart 4 — Waterfall: MCX Change Decomposed Weekly</div>
-          <div className="card-desc">Weekly MCX change split into COMEX contribution (USD price move), Forex (USD/INR move), and MCX premium change vs COMEX→₹.</div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <div className="card-title">🏗 Waterfall: MCX Change Decomposed Weekly</div>
+          <InfoTooltip text={`Weekly MCX price change broken into three attribution buckets:\n\n• COMEX Effect: how much the USD gold/silver price move contributed\n• Forex Effect: how much USD/INR movement contributed\n• MCX Premium Change: how much the MCX-specific premium (duties, local demand) shifted\n\nOnly available for 1M / 6M / 1Y / 5Y / YTD ranges.`} />
         </div>
         <span className="chart-tag tag-4">Attribution</span>
       </div>
