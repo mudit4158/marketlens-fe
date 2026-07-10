@@ -1,36 +1,43 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 
 export default function InfoTooltip({ text }) {
-  const [visible, setVisible] = useState(false);
+  const [pos, setPos] = useState(null);
+  const iconRef = useRef(null);
+
+  const show = () => {
+    const r = iconRef.current?.getBoundingClientRect();
+    if (r) setPos({ x: r.left + r.width / 2, y: r.top - 10 });
+  };
+  const hide = () => setPos(null);
 
   return (
     <div
       style={{ position: 'relative', display: 'inline-flex', alignItems: 'center' }}
-      onMouseEnter={() => setVisible(true)}
-      onMouseLeave={() => setVisible(false)}
+      onMouseEnter={show}
+      onMouseLeave={hide}
     >
       {/* Icon */}
-      <div style={{
+      <div ref={iconRef} style={{
         width: 16, height: 16, borderRadius: '50%',
-        border: '1px solid var(--dim)',
-        color: 'var(--dim)',
+        border: `1px solid ${pos ? 'var(--gold)' : 'var(--dim)'}`,
+        color: pos ? 'var(--gold)' : 'var(--dim)',
         fontSize: 10, fontWeight: 700,
         display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
         cursor: 'default', flexShrink: 0,
         transition: 'border-color 0.15s, color 0.15s',
-        ...(visible ? { borderColor: 'var(--gold)', color: 'var(--gold)' } : {}),
       }}>
         i
       </div>
 
-      {/* Tooltip */}
-      {visible && (
+      {/* Tooltip rendered at body level to escape overflow clipping */}
+      {pos && createPortal(
         <div style={{
-          position: 'absolute',
-          bottom: 'calc(100% + 8px)',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          zIndex: 999,
+          position: 'fixed',
+          left: pos.x,
+          top: pos.y,
+          transform: 'translate(-50%, -100%)',
+          zIndex: 9999,
           width: 280,
           background: '#0A1628',
           border: '1px solid var(--border)',
@@ -39,12 +46,11 @@ export default function InfoTooltip({ text }) {
           fontSize: 11,
           color: 'var(--dim)',
           lineHeight: 1.6,
-          boxShadow: '0 8px 24px rgba(0,0,0,0.5)',
+          boxShadow: '0 8px 24px rgba(0,0,0,0.6)',
           pointerEvents: 'none',
           whiteSpace: 'pre-wrap',
         }}>
           {text}
-          {/* Arrow */}
           <div style={{
             position: 'absolute',
             top: '100%', left: '50%', transform: 'translateX(-50%)',
@@ -53,7 +59,8 @@ export default function InfoTooltip({ text }) {
             borderRight: '6px solid transparent',
             borderTop: '6px solid var(--border)',
           }} />
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );
