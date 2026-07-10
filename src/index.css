@@ -131,3 +131,12 @@ body::before {
   .chart-grid { grid-template-columns: 1fr !important; }
   main { padding: 16px !important; }
 }
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}

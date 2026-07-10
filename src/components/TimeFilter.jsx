@@ -1,8 +1,21 @@
+import { useState, useCallback } from 'react';
+
 const RANGES = ['1H', '3H', '12H', '2D', '5D', '1M', '6M', '1Y', '5Y', 'YTD'];
 const LIVE_RANGES = new Set(['1H', '3H', '12H']);
 
 export default function TimeFilter({ active, onChange, isLive, onLiveToggle, onRefresh, liveLabel }) {
   const canLive = LIVE_RANGES.has(active);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const handleRefresh = useCallback(async () => {
+    if (refreshing) return;
+    setRefreshing(true);
+    const [,] = await Promise.all([
+      onRefresh(),
+      new Promise(r => setTimeout(r, 600)), // minimum visible spin duration
+    ]);
+    setRefreshing(false);
+  }, [onRefresh, refreshing]);
 
   return (
     <div style={{
@@ -44,18 +57,25 @@ export default function TimeFilter({ active, onChange, isLive, onLiveToggle, onR
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0, paddingLeft: 16 }}>
         {/* Refresh */}
         <button
-          onClick={onRefresh}
+          onClick={handleRefresh}
+          disabled={refreshing}
           title="Refresh data"
           style={{
-            display: 'flex', alignItems: 'center', gap: 5,
-            padding: '4px 12px', borderRadius: 20,
-            border: '1px solid var(--border)',
-            background: 'transparent', color: 'var(--dim)',
-            cursor: 'pointer', fontSize: 11, fontWeight: 600,
-            fontFamily: "'Space Grotesk', sans-serif",
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            width: 32, height: 28, borderRadius: 20,
+            border: `1px solid ${refreshing ? 'rgba(74,158,255,0.5)' : 'var(--border)'}`,
+            background: refreshing ? 'rgba(74,158,255,0.08)' : 'transparent',
+            color: refreshing ? '#4A9EFF' : 'var(--dim)',
+            cursor: refreshing ? 'default' : 'pointer',
+            fontSize: 16,
+            transition: 'color 0.15s, border-color 0.15s, background 0.15s',
           }}
         >
-          ↻ Refresh
+          <span style={{
+            display: 'inline-block',
+            animation: refreshing ? 'spin 0.7s linear infinite' : 'none',
+            lineHeight: 1,
+          }}>↻</span>
         </button>
 
         {/* Live toggle */}

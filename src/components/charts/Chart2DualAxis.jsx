@@ -8,10 +8,11 @@ import InfoTooltip from '../InfoTooltip';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Tooltip, Legend, Filler);
 
-export default function Chart2DualAxis({ data, tz = 'IST', isLive = false }) {
+export default function Chart2DualAxis({ data, tz = 'IST', isLive = false, range: rangeProp }) {
   if (!data) return <div className="loading-state">Loading…</div>;
 
-  const { timestamps, dates: rawDates, comex_usd, mcx_inr, usd_inr, interval, range, commodity = 'gold' } = data;
+  const { timestamps, dates: rawDates, comex_usd, mcx_inr, usd_inr, interval, range: dataRange, commodity = 'gold' } = data;
+  const range = rangeProp ?? dataRange;
 
   const dates    = buildDates(timestamps, rawDates, interval, tz);
   const tickDates = buildTickDates(dates, timestamps, interval, range, tz);

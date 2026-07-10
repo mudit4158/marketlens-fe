@@ -72,7 +72,7 @@ export default function App() {
 
   const handleCommodity = (c) => { setCommodity(c); setData(null); setIsLive(false); };
   const handleRange     = (r) => { setRange(r); };
-  const handleRefresh   = () => silentRefresh(commodity, range);
+  const handleRefresh   = () => silentRefresh(commodity, range); // returns promise for button state
 
   const canLive = LIVE_RANGES.has(range);
 
@@ -114,11 +114,11 @@ export default function App() {
       )}
 
       <main style={{ padding: '24px 28px', maxWidth: 1560, margin: '0 auto', position: 'relative', zIndex: 1 }}>
-        <Chart1Premium data={data} tz={tz} isLive={isLive} />
+        <Chart1Premium data={data} tz={tz} isLive={isLive} range={range} />
 
         <div className="chart-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 18, marginBottom: 18 }}>
-          <Chart2DualAxis data={data} tz={tz} isLive={isLive} />
-          <Chart3Indexed  data={data} tz={tz} isLive={isLive} />
+          <Chart2DualAxis data={data} tz={tz} isLive={isLive} range={range} />
+          <Chart3Indexed  data={data} tz={tz} isLive={isLive} range={range} />
         </div>
 
         <div className="chart-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 18, marginBottom: 18 }}>

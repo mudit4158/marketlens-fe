@@ -13,10 +13,11 @@ const COMMODITY_CFG = {
   silver: { mcxLabel: 'MCX Silver (₹/kg)', comexLabel: 'COMEX → ₹/kg',  unit: '₹/kg'  },
 };
 
-export default function Chart1Premium({ data, tz = 'IST', isLive = false }) {
+export default function Chart1Premium({ data, tz = 'IST', isLive = false, range: rangeProp }) {
   if (!data) return <div className="loading-state">Loading…</div>;
 
-  const { timestamps, dates: rawDates, comex_inr, mcx_inr, summary, interval, range, commodity = 'gold' } = data;
+  const { timestamps, dates: rawDates, comex_inr, mcx_inr, summary, interval, range: dataRange, commodity = 'gold' } = data;
+  const range = rangeProp ?? dataRange;
   const cfg = COMMODITY_CFG[commodity] || COMMODITY_CFG.gold;
 
   const dates    = buildDates(timestamps, rawDates, interval, tz);
