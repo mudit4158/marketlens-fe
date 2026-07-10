@@ -11,7 +11,7 @@ const TICK_LIMIT = 8;
 export default function Chart2DualAxis({ data }) {
   if (!data) return <div className="loading-state">Loading…</div>;
 
-  const { dates, comex_usd, comex_inr_duty, usd_inr } = data;
+  const { dates, comex_usd, mcx_inr, usd_inr } = data;
   const step = Math.max(1, Math.floor(dates.length / TICK_LIMIT));
   const tickDates = dates.map((d, i) => (i % step === 0 ? d : ''));
 
@@ -19,8 +19,8 @@ export default function Chart2DualAxis({ data }) {
     labels: tickDates,
     datasets: [
       {
-        label: 'MCX Proxy ₹ (Left)',
-        data: comex_inr_duty,
+        label: 'MCX Gold ₹ (Left)',
+        data: mcx_inr,
         borderColor: '#E8C547',
         borderWidth: 2,
         pointRadius: 0,
@@ -82,8 +82,8 @@ export default function Chart2DualAxis({ data }) {
     <div className="card">
       <div className="card-head">
         <div>
-          <div className="card-title">📈 Chart 2 — Dual Axis: COMEX ($) + MCX Proxy (₹)</div>
-          <div className="card-desc">Left axis MCX proxy in ₹, right axis COMEX in $. USD/INR × 100 dashed. Dual axes can mislead — use for correlation only.</div>
+          <div className="card-title">📈 Chart 2 — Dual Axis: COMEX ($) + MCX Gold (₹)</div>
+          <div className="card-desc">Left axis MCX Gold in ₹, right axis COMEX in $. USD/INR × 100 dashed. Dual axes can mislead — use for correlation only.</div>
         </div>
         <span className="chart-tag tag-2">Dual Axis</span>
       </div>
@@ -91,7 +91,7 @@ export default function Chart2DualAxis({ data }) {
         <Line data={chartData} options={opts} />
       </div>
       <div className="legend">
-        <div className="legend-item"><div className="legend-line" style={{ background: 'var(--gold)' }} /> MCX Proxy ₹ (Left)</div>
+        <div className="legend-item"><div className="legend-line" style={{ background: 'var(--gold)' }} /> MCX Gold ₹ (Left)</div>
         <div className="legend-item"><div className="legend-line" style={{ background: 'var(--blue)' }} /> COMEX $ (Right)</div>
         <div className="legend-item"><div className="legend-line" style={{ background: 'rgba(94,234,212,0.5)' }} /> USD/INR × 100 (Right)</div>
       </div>

@@ -17,13 +17,13 @@ const TICK_LIMIT = 8;
 export default function Chart3Indexed({ data }) {
   if (!data) return <div className="loading-state">Loading…</div>;
 
-  const { dates, comex_usd, comex_inr_duty, usd_inr } = data;
+  const { dates, comex_usd, mcx_inr, usd_inr } = data;
   const step = Math.max(1, Math.floor(dates.length / TICK_LIMIT));
   const tickDates = dates.map((d, i) => (i % step === 0 ? d : ''));
 
-  const mcxIdx    = rebase(comex_inr_duty);
-  const comexIdx  = rebase(comex_usd);
-  const fxIdx     = rebase(usd_inr);
+  const mcxIdx   = rebase(mcx_inr);
+  const comexIdx = rebase(comex_usd);
+  const fxIdx    = rebase(usd_inr);
 
   const lastMcx   = mcxIdx?.at(-1);
   const lastComex = comexIdx?.at(-1);
@@ -32,7 +32,7 @@ export default function Chart3Indexed({ data }) {
   const chartData = {
     labels: tickDates,
     datasets: [
-      { label: 'MCX Proxy (Indexed)', data: mcxIdx, borderColor: '#E8C547', borderWidth: 2, pointRadius: 0, tension: 0.3 },
+      { label: 'MCX Gold (Indexed)', data: mcxIdx, borderColor: '#E8C547', borderWidth: 2, pointRadius: 0, tension: 0.3 },
       { label: 'COMEX (Indexed)', data: comexIdx, borderColor: '#4A9EFF', borderWidth: 2, pointRadius: 0, tension: 0.3 },
       { label: 'USD/INR (Indexed)', data: fxIdx, borderColor: '#FF7043', borderWidth: 1.5, pointRadius: 0, tension: 0.3, borderDash: [4, 3] },
     ],
@@ -67,7 +67,7 @@ export default function Chart3Indexed({ data }) {
       <div className="card-head">
         <div>
           <div className="card-title">📉 Chart 3 — Indexed to 100: Relative Performance</div>
-          <div className="card-desc">All three rebased to 100 on Day 1. Divergence between MCX proxy & COMEX lines reveals USD/INR contribution.</div>
+          <div className="card-desc">All three rebased to 100 on Day 1. Divergence between MCX & COMEX lines reveals USD/INR contribution.</div>
         </div>
         <span className="chart-tag tag-3">Indexed</span>
       </div>
@@ -75,12 +75,12 @@ export default function Chart3Indexed({ data }) {
         <Line data={chartData} options={opts} />
       </div>
       <div className="legend">
-        <div className="legend-item"><div className="legend-line" style={{ background: 'var(--gold)' }} /> MCX Proxy (Indexed)</div>
+        <div className="legend-item"><div className="legend-line" style={{ background: 'var(--gold)' }} /> MCX Gold (Indexed)</div>
         <div className="legend-item"><div className="legend-line" style={{ background: 'var(--blue)' }} /> COMEX (Indexed)</div>
         <div className="legend-item"><div className="legend-line" style={{ background: 'var(--orange)' }} /> USD/INR (Indexed)</div>
       </div>
       <div className="stats-row">
-        {lastMcx != null && <div className="stat"><div className="stat-lbl">MCX Proxy Δ</div><div className="stat-val" style={{ color: lastMcx >= 100 ? 'var(--green)' : 'var(--red)' }}>{(lastMcx - 100).toFixed(2)}%</div></div>}
+        {lastMcx != null && <div className="stat"><div className="stat-lbl">MCX Δ</div><div className="stat-val" style={{ color: lastMcx >= 100 ? 'var(--green)' : 'var(--red)' }}>{(lastMcx - 100).toFixed(2)}%</div></div>}
         {lastComex != null && <div className="stat"><div className="stat-lbl">COMEX Δ</div><div className="stat-val" style={{ color: lastComex >= 100 ? 'var(--green)' : 'var(--red)' }}>{(lastComex - 100).toFixed(2)}%</div></div>}
         {lastFx != null && <div className="stat"><div className="stat-lbl">USD/INR Δ</div><div className="stat-val" style={{ color: lastFx >= 100 ? 'var(--green)' : 'var(--red)' }}>{(lastFx - 100).toFixed(2)}%</div></div>}
       </div>

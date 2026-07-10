@@ -16,7 +16,7 @@ export default function Chart4Waterfall({ data }) {
         <div className="card-head">
           <div>
             <div className="card-title">🏗 Chart 4 — Waterfall: MCX Change Decomposed</div>
-            <div className="card-desc">Weekly MCX change split into COMEX contribution, Forex contribution, and residual premium change.</div>
+            <div className="card-desc">Weekly MCX change split into COMEX contribution, Forex contribution, and MCX premium change.</div>
           </div>
           <span className="chart-tag tag-4">Attribution</span>
         </div>
@@ -45,9 +45,9 @@ export default function Chart4Waterfall({ data }) {
         borderRadius: 4,
       },
       {
-        label: 'Premium / Residual',
-        data: waterfall.map(w => w.premium_residual),
-        backgroundColor: waterfall.map(w => w.premium_residual >= 0 ? 'rgba(167,139,250,0.8)' : 'rgba(167,139,250,0.4)'),
+        label: 'MCX Premium Change',
+        data: waterfall.map(w => w.mcx_premium),
+        backgroundColor: waterfall.map(w => (w.mcx_premium ?? 0) >= 0 ? 'rgba(167,139,250,0.8)' : 'rgba(167,139,250,0.4)'),
         borderRadius: 4,
       },
     ],
@@ -65,6 +65,7 @@ export default function Chart4Waterfall({ data }) {
         callbacks: {
           label: ctx => {
             const v = ctx.raw;
+            if (v == null) return '';
             const sign = v >= 0 ? '+' : '';
             return `${ctx.dataset.label}: ${sign}₹${Math.abs(v).toLocaleString('en-IN', { maximumFractionDigits: 0 })}`;
           },
@@ -88,7 +89,7 @@ export default function Chart4Waterfall({ data }) {
       <div className="card-head">
         <div>
           <div className="card-title">🏗 Chart 4 — Waterfall: MCX Change Decomposed Weekly</div>
-          <div className="card-desc">Weekly MCX proxy change split into COMEX contribution (USD price move), Forex (USD/INR move), and residual premium change.</div>
+          <div className="card-desc">Weekly MCX change split into COMEX contribution (USD price move), Forex (USD/INR move), and MCX premium change vs COMEX→₹.</div>
         </div>
         <span className="chart-tag tag-4">Attribution</span>
       </div>
@@ -98,7 +99,7 @@ export default function Chart4Waterfall({ data }) {
       <div className="legend">
         <div className="legend-item"><div className="legend-dot" style={{ background: 'var(--blue)' }} /> COMEX Price Effect</div>
         <div className="legend-item"><div className="legend-dot" style={{ background: 'var(--orange)' }} /> Forex (USD/INR) Effect</div>
-        <div className="legend-item"><div className="legend-dot" style={{ background: 'var(--purple)' }} /> Premium / Residual</div>
+        <div className="legend-item"><div className="legend-dot" style={{ background: 'var(--purple)' }} /> MCX Premium Change</div>
       </div>
     </div>
   );

@@ -11,7 +11,7 @@ const TICK_LIMIT = 10;
 export default function Chart1Premium({ data }) {
   if (!data) return <div className="loading-state">Loading…</div>;
 
-  const { dates, comex_inr, comex_inr_duty, summary } = data;
+  const { dates, comex_inr, mcx_inr, summary } = data;
 
   const step = Math.max(1, Math.floor(dates.length / TICK_LIMIT));
   const tickDates = dates.map((d, i) => (i % step === 0 ? d : ''));
@@ -20,8 +20,8 @@ export default function Chart1Premium({ data }) {
     labels: tickDates,
     datasets: [
       {
-        label: 'COMEX → ₹ + Duty (MCX Proxy)',
-        data: comex_inr_duty,
+        label: 'MCX Gold (₹/10g)',
+        data: mcx_inr,
         borderColor: '#E8C547',
         backgroundColor: 'rgba(232,197,71,0.06)',
         borderWidth: 2,
@@ -40,8 +40,8 @@ export default function Chart1Premium({ data }) {
         fill: false,
       },
       {
-        label: 'Premium Band',
-        data: comex_inr_duty,
+        label: 'MCX Premium Band',
+        data: mcx_inr,
         borderColor: 'transparent',
         backgroundColor: 'rgba(232,197,71,0.10)',
         borderWidth: 0,
@@ -86,15 +86,17 @@ export default function Chart1Premium({ data }) {
   };
 
   const period = summary ? `${summary.period_start} – ${summary.period_end} · ${data.interval} bars` : '';
+  const hasMcx = summary?.has_mcx_data;
 
   return (
     <div className="card chart-full" style={{ marginBottom: 18 }}>
       <div className="card-head">
         <div>
-          <div className="card-title">📊 Chart 1 — Premium View: COMEX-in-₹ vs MCX Proxy with Duty Band</div>
+          <div className="card-title">📊 Chart 1 — MCX Gold vs COMEX→₹ Conversion</div>
           <div className="card-desc">
-            COMEX price converted at daily USD/INR rate (pre-duty baseline) vs estimated MCX price (COMEX × 1.18 for duty+GST).
-            Shaded band = India duty premium. No live MCX data — proxy only.
+            {hasMcx
+              ? 'Actual MCX Gold futures (₹/10g) vs COMEX converted at daily USD/INR rate. Shaded band = MCX premium over COMEX conversion.'
+              : 'COMEX price converted at daily USD/INR rate. MCX data not yet available — run the MCX seeder.'}
           </div>
         </div>
         <span className="chart-tag tag-1">Premium View</span>
@@ -104,16 +106,16 @@ export default function Chart1Premium({ data }) {
         <Line data={chartData} options={opts} />
       </div>
       <div className="legend">
-        <div className="legend-item"><div className="legend-line" style={{ background: 'var(--gold)' }} /> MCX Proxy (₹/10g) — COMEX × 1.18 duty factor</div>
+        <div className="legend-item"><div className="legend-line" style={{ background: 'var(--gold)' }} /> MCX Gold (₹/10g) — Actual Futures</div>
         <div className="legend-item"><div className="legend-line" style={{ background: 'var(--blue)' }} /> COMEX → ₹ (Pre-Duty Conversion)</div>
-        <div className="legend-item"><div className="legend-band" style={{ background: 'rgba(232,197,71,0.18)', border: '1px solid rgba(232,197,71,0.3)' }} /> Duty Premium Band</div>
+        <div className="legend-item"><div className="legend-band" style={{ background: 'rgba(232,197,71,0.18)', border: '1px solid rgba(232,197,71,0.3)' }} /> MCX Premium Band</div>
       </div>
       {summary && (
         <div className="stats-row">
-          <div className="stat"><div className="stat-lbl">COMEX Latest</div><div className="stat-val">${summary.comex_latest?.toLocaleString()}</div></div>
-          <div className="stat"><div className="stat-lbl">COMEX → ₹ Latest</div><div className="stat-val">₹{summary.comex_inr_latest?.toLocaleString('en-IN')}</div></div>
-          <div className="stat"><div className="stat-lbl">MCX Proxy</div><div className="stat-val">₹{summary.comex_inr_duty_latest?.toLocaleString('en-IN')}</div></div>
-          <div className="stat"><div className="stat-lbl">Duty Premium</div><div className="stat-val" style={{ color: 'var(--orange)' }}>₹{summary.india_premium?.toLocaleString('en-IN')} ({summary.india_premium_pct?.toFixed(1)}%)</div></div>
+          <div className="stat"><div className="stat-lbl">COMEX Latest</div><div className="stat-val">${summary.comex_usd_latest?.toLocaleString()}</div></div>
+          <div className="stat"><div className="stat-lbl">COMEX → ₹</div><div className="stat-val">₹{summary.comex_inr_latest?.toLocaleString('en-IN')}</div></div>
+          <div className="stat"><div className="stat-lbl">MCX Gold</div><div className="stat-val">{summary.mcx_inr_latest ? `₹${summary.mcx_inr_latest?.toLocaleString('en-IN')}` : '—'}</div></div>
+          <div className="stat"><div className="stat-lbl">MCX Premium</div><div className="stat-val" style={{ color: 'var(--orange)' }}>{summary.mcx_premium_abs != null ? `₹${summary.mcx_premium_abs?.toLocaleString('en-IN')} (${summary.mcx_premium_pct?.toFixed(1)}%)` : '—'}</div></div>
         </div>
       )}
     </div>

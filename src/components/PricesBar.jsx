@@ -42,8 +42,8 @@ export default function PricesBar({ summary, range }) {
     );
   }
 
-  const changeBadge = pctBadge(summary.comex_change_pct);
-  const indiaPremPct = summary.india_premium_pct;
+  const changeBadge = pctBadge(summary.comex_usd_change_pct);
+  const mcxPremPct = summary.mcx_premium_pct;
 
   return (
     <div style={{
@@ -54,17 +54,17 @@ export default function PricesBar({ summary, range }) {
     }}>
       <Chip
         label="COMEX Gold ($/oz)"
-        value={`$${fmt(summary.comex_latest, 2)}`}
+        value={`$${fmt(summary.comex_usd_latest, 2)}`}
         valueColor="var(--gold)"
         sub={changeBadge.text + ' period'}
         subColor={changeBadge.color}
       />
       <Chip
-        label="MCX Proxy (₹/10g)"
-        value={`₹${fmt(summary.comex_inr_duty_latest)}`}
+        label="MCX Gold (₹/10g)"
+        value={summary.mcx_inr_latest ? `₹${fmt(summary.mcx_inr_latest)}` : '—'}
         valueColor="var(--gold2)"
-        sub="Est. w/ 18% duty factor"
-        subColor="var(--dim)"
+        sub={summary.has_mcx_data ? 'Actual MCX futures' : 'No MCX data yet'}
+        subColor={summary.has_mcx_data ? 'var(--green)' : 'var(--dim)'}
       />
       <Chip
         label="USD / INR"
@@ -81,10 +81,10 @@ export default function PricesBar({ summary, range }) {
         subColor="var(--dim)"
       />
       <Chip
-        label="Duty Premium"
-        value={`₹${fmt(summary.india_premium)}`}
+        label="MCX Premium"
+        value={summary.mcx_premium_abs != null ? `₹${fmt(summary.mcx_premium_abs)}` : '—'}
         valueColor="var(--orange)"
-        sub={indiaPremPct != null ? `+${indiaPremPct.toFixed(1)}% duty+GST factor` : '—'}
+        sub={mcxPremPct != null ? `${mcxPremPct >= 0 ? '+' : ''}${mcxPremPct.toFixed(1)}% over COMEX→₹` : 'No MCX data'}
         subColor="var(--dim)"
       />
       <div style={{ padding: '10px 20px', flexShrink: 0 }}>

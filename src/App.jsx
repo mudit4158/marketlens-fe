@@ -95,14 +95,14 @@ export default function App() {
                 body: 'INR=X spot rate via yfinance. Daily closing rate used to convert COMEX into Indian Rupees.',
               },
               {
-                title: 'MCX Proxy Calculation',
+                title: 'MCX Gold (Actual)',
                 color: 'var(--orange)',
-                body: 'No live MCX data available via free APIs. Proxy = (COMEX / 31.1035 × 10 × USD/INR) × 1.18 factor (duty+GST estimate).',
+                body: 'Near-month MCX Gold futures (GOLD26AUGFUT) via Upstox API. Prices in INR per 10g. Rolled to next contract on expiry.',
               },
               {
-                title: 'India Premium',
+                title: 'MCX Premium',
                 color: 'var(--purple)',
-                body: 'Difference between MCX proxy and raw COMEX→₹ conversion. Represents import duty (12.5%) + AIDC (2.5%) + GST (3%) + margins.',
+                body: 'Difference between actual MCX Gold price and COMEX converted at USD/INR. Reflects import duty, GST, and local demand premium.',
               },
             ].map(card => (
               <div key={card.title} style={{ background: 'var(--bg2)', borderRadius: 10, padding: '14px 16px', border: '1px solid var(--border)' }}>
