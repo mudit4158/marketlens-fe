@@ -23,8 +23,8 @@ export default function Chart2DualAxis({ data, tz = 'IST', isLive = false, range
   const chartData = {
     labels: tickDates,
     datasets: [
-      { label: mcxLabel,   data: mcx_inr,  borderColor: '#E8C547', borderWidth: 2, pointRadius: 0, tension: 0.3, yAxisID: 'yLeft' },
-      { label: comexLabel, data: comex_usd, borderColor: '#4A9EFF', borderWidth: 2, pointRadius: 0, tension: 0.3, yAxisID: 'yRight' },
+      { label: mcxLabel,   data: mcx_inr,  borderColor: '#E8C547', borderWidth: 2, pointRadius: 0, tension: 0.3, spanGaps: false, yAxisID: 'yLeft' },
+      { label: comexLabel, data: comex_usd, borderColor: '#4A9EFF', borderWidth: 2, pointRadius: 0, tension: 0.3, spanGaps: false, yAxisID: 'yRight' },
       {
         label: 'USD/INR × 100 (Right)',
         data: usd_inr?.map(v => v != null ? v * 100 : null),

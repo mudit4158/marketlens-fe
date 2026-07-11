@@ -34,6 +34,7 @@ export default function Chart1Premium({ data, tz = 'IST', isLive = false, range:
         borderWidth: 2,
         pointRadius: 0,
         tension: 0.3,
+        spanGaps: false,
         fill: false,
       },
       {
@@ -44,6 +45,7 @@ export default function Chart1Premium({ data, tz = 'IST', isLive = false, range:
         borderWidth: 2,
         pointRadius: 0,
         tension: 0.3,
+        spanGaps: false,
         fill: false,
       },
       {

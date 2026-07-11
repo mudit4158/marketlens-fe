@@ -36,8 +36,8 @@ export default function Chart3Indexed({ data, tz = 'IST', isLive = false, range:
   const chartData = {
     labels: tickDates,
     datasets: [
-      { label: mcxLabel,          data: mcxIdx,   borderColor: '#E8C547', borderWidth: 2, pointRadius: 0, tension: 0.3 },
-      { label: 'COMEX (Indexed)', data: comexIdx, borderColor: '#4A9EFF', borderWidth: 2, pointRadius: 0, tension: 0.3 },
+      { label: mcxLabel,          data: mcxIdx,   borderColor: '#E8C547', borderWidth: 2, pointRadius: 0, tension: 0.3, spanGaps: false },
+      { label: 'COMEX (Indexed)', data: comexIdx, borderColor: '#4A9EFF', borderWidth: 2, pointRadius: 0, tension: 0.3, spanGaps: false },
       { label: 'USD/INR (Indexed)', data: fxIdx,  borderColor: '#FF7043', borderWidth: 1.5, pointRadius: 0, tension: 0.3, borderDash: [4, 3] },
     ],
   };
